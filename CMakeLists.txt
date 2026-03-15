@@ -66,4 +66,5 @@ endfunction()
 # Hardware-specific examples in subdirectories:
 add_subdirectory(i2c_test)
 add_subdirectory(vga_test)
+add_subdirectory(combined_test)
 
