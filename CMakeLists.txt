@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 # Pull in SDK (must be before project)
 include(pico_sdk_import.cmake)
+include(picovga_import.cmake)   # Inclue PicoVGA
 #include(pico_extras_import_optional.cmake)
 
 project(pico_examples C CXX ASM)
@@ -64,4 +65,5 @@ endfunction()
 
 # Hardware-specific examples in subdirectories:
 add_subdirectory(i2c_test)
+add_subdirectory(vga_test)
 
