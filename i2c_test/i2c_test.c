@@ -4,10 +4,7 @@
 #include "hardware/irq.h"
 #include <stdio.h>
 
-static const uint I2C_SLAVE_ADDRESS = 0x20;
-static const uint I2C_BAUDRATE = 400000;
-static const uint I2C_SLAVE_SDA_PIN = 16;
-static const uint I2C_SLAVE_SCL_PIN = 17;
+#include "i2c_config.h"
 
 bool led = true;
 uint8_t data;

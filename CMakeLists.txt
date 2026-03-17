@@ -63,6 +63,16 @@ endfunction()
 #    add_compile_options(-Wno-maybe-uninitialized)
 #endif()
 
+include_directories(
+    ${PROJECT_SOURCE_DIR}/include
+)
+
+link_libraries(
+    pico_i2c_slave
+    hardware_i2c
+    pico_stdlib
+)
+
 # Hardware-specific examples in subdirectories:
 add_subdirectory(i2c_test)
 add_subdirectory(vga_test)

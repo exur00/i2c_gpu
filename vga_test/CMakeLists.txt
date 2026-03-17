@@ -9,10 +9,5 @@ add_executable(helloworld
 # Add PicoVGA to the target
 add_picovga(helloworld)
 
-# for vga_config.h include
-target_include_directories(helloworld PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
-)
-
 # Generate the uf2 output
 pico_add_extra_outputs(helloworld)
