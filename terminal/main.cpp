@@ -24,16 +24,26 @@ ALIGNED u8 TextBuf[2*TEXTSIZE];
 ALIGNED u8 Font_Copy[sizeof(FontBold8x8)];
 
 bool led = true;
-uint8_t data;
+uint8_t data[100];
 bool new_data;
+size_t data_size;
+size_t data_size_counter;
 
-// TODO: implement >1 byte transmissions
+// TODO: gracefully handle transmissions that come before the previous one is handled
 static void i2c_slave_handler(i2c_inst_t *i2c, i2c_slave_event_t event) {
-    if (event == I2C_SLAVE_RECEIVE) {
-        led = !led;
-        gpio_put(PICO_DEFAULT_LED_PIN, led);
-        data = i2c_read_byte_raw(i2c);
+    led = !led;
+    gpio_put(PICO_DEFAULT_LED_PIN, led);
+    switch (event)  {
+    case I2C_SLAVE_RECEIVE:
+        data[data_size_counter++] = i2c_read_byte_raw(i2c);
+        break;
+    case I2C_SLAVE_FINISH:
+        data_size = data_size_counter;
         new_data = true;
+        data_size_counter = 0;
+        break;
+    default:
+        break;
     }
 }
 
@@ -75,12 +85,35 @@ int main() {
         sleep_us(10);
         
         if (new_data) {
-            new_data = false;
-            printf("printing: %d\n", data);
-            if (PrintX == TEXTW) {
-                PrintChar(CHAR_LF);
+            if (data_size == 1) {
+                printf("printing: %d\n", data);
+                if (PrintX == TEXTW) {
+                    PrintChar(CHAR_LF);
+                }
+                PrintChar(data[0]);
+            } else {
+                switch (data[0]) // first byte defines commant
+                {
+                case 0x1: // replace with control command macro
+                    switch (data[1]) {
+                        case 0x0: // replace with CLS macro
+                            PrintClear();
+                            PrintHome();
+                            break;
+
+                        default:
+                            break;
+                    }
+                    break;
+                
+                default:
+                    break;
+                }
             }
-            PrintChar(data);
+
+            // een check dat data groter dan 0 is?
+
+            new_data = false;
         }
     }
 }
