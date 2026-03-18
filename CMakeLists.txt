@@ -77,4 +77,5 @@ link_libraries(
 add_subdirectory(i2c_test)
 add_subdirectory(vga_test)
 add_subdirectory(combined_test)
+add_subdirectory(terminal)
 
