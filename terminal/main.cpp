@@ -65,6 +65,13 @@ void cls() {
     PrintHome();
 }
 
+void backspace() {
+    if (PrintX == 0) return;
+    PrintX--;
+    PrintChar(' ');
+    PrintX--;
+}
+
 int main() {
     #ifdef DEBUG
     stdio_init_all();
@@ -100,13 +107,16 @@ int main() {
                 }
                 PrintChar(data[0]);
             } else {
-                switch (data[0]) // first byte defines commant
+                switch (data[0]) // first byte defines command
                 {
                 case 0x1: // replace with control command macro
                     switch (data[1]) {
                         case 0x0: // replace with CLS macro
                             PrintClear();
                             PrintHome();
+                            break;
+                        case 0x2: // replace with backspace macro
+                            backspace();
                             break;
 
                         default:
