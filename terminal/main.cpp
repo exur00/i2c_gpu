@@ -66,7 +66,10 @@ void cls() {
 }
 
 int main() {
+    #ifdef DEBUG
     stdio_init_all();
+    #endif
+
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
     gpio_put(PICO_DEFAULT_LED_PIN, led);
@@ -79,14 +82,19 @@ int main() {
 	Video(DEV_VGA, RES_VGA, FORM_TEXT8, TextBuf, Font_Copy);
     PrintSetCol(PC_LTMAGENTA);
 
+    #ifdef DEBUG
     PrintText("Hello World!");
+    #endif
 
     while (true) {
         sleep_us(10);
         
         if (new_data) {
             if (data_size == 1) {
+                #ifdef DEBUG
                 printf("printing: %d\n", data);
+                #endif
+
                 if (PrintX == TEXTW) {
                     PrintChar(CHAR_LF);
                 }
