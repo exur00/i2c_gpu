@@ -14,8 +14,8 @@
 #define FONTH	8	// font height
 #define TEXTW	(WIDTH/FONTW) // text width (=80)
 #define TEXTH	(HEIGHT/FONTH) // text height (=60)
-#define TEXTWB	TEXTW // text width byte (=80)
-#define TEXTSIZE (TEXTWB*TEXTH) // text box size in bytes (=4800)
+#define TEXTWB	2*TEXTW // text width byte (=80)
+#define TEXTSIZE 2*(TEXTWB*TEXTH) // text box size in bytes (=4800)
 
 // text screen (mono character, format GF_MTEXT)
 ALIGNED u8 TextBuf[2*TEXTSIZE];
@@ -72,6 +72,32 @@ void backspace() {
     PrintX--;
 }
 
+void scroll_up() {
+	for (size_t r=1; r<TEXTH; r++) {
+		memcpy(&PrintBuf[TEXTWB*(r-1)], &PrintBuf[TEXTWB*r], TEXTWB);
+	}
+    for (size_t i = 0; i < TEXTWB; i++) {
+        memset(&PrintBuf[TEXTWB*(TEXTH-1)], 0, TEXTWB);
+    }
+    PrintX = 0; // TODO: I don't know why this is necessary, but without this the first character after the scroll does not print.
+    PrintY = TEXTH - 1;
+}
+
+void printChar(uint8_t c) {
+    //TODO: add autoscroll toggle
+    PrintChar(data[0]);
+    if (PrintY >= TEXTH) {
+        scroll_up();
+    }
+    // TODO: 2 seems weird, but it is working correctly, why?
+    if (PrintX >= TEXTW - 2) {
+        PrintChar(CHAR_LF);
+    }
+    if (PrintY >= TEXTH) {
+        scroll_up();
+    }
+}
+
 int main() {
     #ifdef DEBUG
     stdio_init_all();
@@ -102,10 +128,7 @@ int main() {
                 printf("printing: %d\n", data);
                 #endif
 
-                if (PrintX == TEXTW) {
-                    PrintChar(CHAR_LF);
-                }
-                PrintChar(data[0]);
+                printChar(data[0]);
             } else {
                 switch (data[0]) // first byte defines command
                 {
@@ -128,6 +151,10 @@ int main() {
                     break;
                 }
             }
+
+            #ifdef DEBUG
+            printf("Cursor position: PrintX, PrintY: %d,%d\n", PrintX, PrintY);
+            #endif
 
             // een check dat data groter dan 0 is?
 
