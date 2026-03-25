@@ -24,7 +24,7 @@ ALIGNED u8 TextBuf[2*TEXTSIZE];
 ALIGNED u8 Font_Copy[sizeof(FontBold8x8)];
 
 bool led = true;
-uint8_t data[100];
+char data[100];
 bool new_data;
 size_t data_size;
 size_t data_size_counter;
@@ -132,6 +132,9 @@ int main() {
             } else {
                 switch (data[0]) // first byte defines command
                 {
+                case 0x0: // replace with control command macro
+                    data[data_size] = 0x0; // add null terminator.
+                    PrintText(&data[1]);  // TODO: does not wrap.
                 case 0x1: // replace with control command macro
                     switch (data[1]) {
                         case 0x0: // replace with CLS macro
