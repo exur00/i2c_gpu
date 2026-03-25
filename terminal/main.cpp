@@ -7,15 +7,7 @@
 
 #include "picovga.h"
 #include "i2c_config.h"
-
-#define WIDTH	640	// screen width in pixels
-#define HEIGHT	480	// screen height
-#define FONTW	8	// font width
-#define FONTH	8	// font height
-#define TEXTW	(WIDTH/FONTW) // text width (=80)
-#define TEXTH	(HEIGHT/FONTH) // text height (=60)
-#define TEXTWB	2*TEXTW // text width byte (=80)
-#define TEXTSIZE 2*(TEXTWB*TEXTH) // text box size in bytes (=4800)
+#include "terminal.h"
 
 // text screen (mono character, format GF_MTEXT)
 ALIGNED u8 TextBuf[2*TEXTSIZE];
@@ -132,16 +124,16 @@ int main() {
             } else {
                 switch (data[0]) // first byte defines command
                 {
-                case 0x0: // replace with control command macro
+                case PRINT_STRING:
                     data[data_size] = 0x0; // add null terminator.
                     PrintText(&data[1]);  // TODO: does not wrap.
-                case 0x1: // replace with control command macro
+                case CONTROL_COMMAND:
                     switch (data[1]) {
-                        case 0x0: // replace with CLS macro
+                        case CLS:
                             PrintClear();
                             PrintHome();
                             break;
-                        case 0x2: // replace with backspace macro
+                        case BACKSPACE:
                             backspace();
                             break;
 

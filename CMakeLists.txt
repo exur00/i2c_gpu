@@ -65,6 +65,7 @@ endfunction()
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/shared_defines
 )
 
 link_libraries(
