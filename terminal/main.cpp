@@ -141,7 +141,8 @@ int main() {
                             break;
                     }
                     break;
-                
+                case SET_COLOR:
+                    PrintSetCol(data[1]);
                 default:
                     break;
                 }
